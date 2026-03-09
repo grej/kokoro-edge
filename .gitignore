@@ -1,0 +1,13 @@
+.build/
+.build-xcode/
+.swiftpm/
+DerivedData/
+.DS_Store
+dist/
+*.wav
+*.mp3
+*.profraw
+default.profraw
+pixi.toml
+pixi.lock
+.pixi/

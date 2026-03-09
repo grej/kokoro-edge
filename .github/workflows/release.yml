@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: macos-15
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Show Xcode version
+        run: xcodebuild -version
+
+      - name: Build staged release artifact
+        run: ./Scripts/make-release.sh "${GITHUB_REF_NAME#v}"
+
+      - name: Prepare release notes
+        run: |
+          archive="$(ls dist/kokoro-edge-*.tar.gz | head -n 1)"
+          checksum="$(cut -d' ' -f1 "${archive}.sha256")"
+          cat > dist/release-notes.md <<EOF
+          kokoro-edge ${GITHUB_REF_NAME}
+
+          SHA256
+          ${checksum}
+
+          If hosted ARM64 runners do not expose the required Xcode version, cut the release locally with ./Scripts/make-release.sh and upload the same artifact manually.
+          EOF
+
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: dist/release-notes.md
+          files: |
+            dist/*.tar.gz
+            dist/*.sha256
