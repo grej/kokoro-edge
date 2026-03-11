@@ -16,6 +16,16 @@ mkdir -p "$DERIVED_DATA" "$SOURCE_PACKAGES" "$PACKAGE_CACHE"
 
 cd "$ROOT"
 
+echo "Using Xcode:"
+xcodebuild -version
+echo "Using Swift:"
+xcrun swift --version
+
+if ! xcrun swift --version | grep -Eq 'Swift version (6\.[1-9]|[7-9]\.)'; then
+  echo "error: kokoro-edge requires Swift 6.1 or newer" >&2
+  exit 1
+fi
+
 xcodebuild build \
   -configuration Release \
   -scheme kokoro-edge \

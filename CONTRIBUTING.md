@@ -4,8 +4,8 @@
 
 - Apple Silicon Mac
 - macOS 15+
-- Xcode 16.3+
-- Swift 6.2+
+- Xcode 16.4+
+- Swift 6.1+
 
 ## Build and Test
 

@@ -11,6 +11,8 @@ permissions:
 jobs:
   release:
     runs-on: macos-15
+    env:
+      DEVELOPER_DIR: /Applications/Xcode_16.4.app/Contents/Developer
 
     steps:
       - name: Check out repository
@@ -18,6 +20,16 @@ jobs:
 
       - name: Show Xcode version
         run: xcodebuild -version
+
+      - name: Show Swift version
+        run: xcrun swift --version
+
+      - name: Verify Swift toolchain floor
+        run: |
+          if ! xcrun swift --version | grep -Eq 'Swift version (6\.[1-9]|[7-9]\.)'; then
+            echo "kokoro-edge requires Swift 6.1 or newer"
+            exit 1
+          fi
 
       - name: Build staged release artifact
         run: ./Scripts/make-release.sh "${GITHUB_REF_NAME#v}"
@@ -32,7 +44,7 @@ jobs:
           SHA256
           ${checksum}
 
-          If hosted ARM64 runners do not expose the required Xcode version, cut the release locally with ./Scripts/make-release.sh and upload the same artifact manually.
+          If hosted ARM64 runners do not expose a Swift 6.1+ toolchain, cut the release locally with ./Scripts/make-release.sh and upload the same artifact manually.
           EOF
 
       - name: Publish GitHub release

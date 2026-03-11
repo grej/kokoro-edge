@@ -1,5 +1,11 @@
 import Foundation
 
+protocol SpeechSynthesizing {
+    func synthesize(text: String, voice: String, speed: Float, language: TTSEngineLanguage?) throws -> [Float]
+}
+
+extension TTSEngine: SpeechSynthesizing {}
+
 struct SynthesisPipelineResult {
     let samples: [Float]
     let chunkCount: Int
@@ -11,7 +17,7 @@ enum SynthesisPipeline {
         voice: String,
         speed: Float,
         language: TTSEngineLanguage?,
-        engine: TTSEngine
+        engine: any SpeechSynthesizing
     ) throws -> SynthesisPipelineResult {
         let prepared = TextPreprocessor.prepare(text)
         return try synthesize(chunks: prepared.chunks, voice: voice, speed: speed, language: language, engine: engine)
@@ -22,7 +28,7 @@ enum SynthesisPipeline {
         voice: String,
         speed: Float,
         language: TTSEngineLanguage?,
-        engine: TTSEngine
+        engine: any SpeechSynthesizing
     ) throws -> SynthesisPipelineResult {
         var allSamples: [Float] = []
         var totalChunkCount = 0
@@ -47,15 +53,18 @@ enum SynthesisPipeline {
         voice: String,
         speed: Float,
         language: TTSEngineLanguage?,
-        engine: TTSEngine
+        engine: any SpeechSynthesizing
     ) throws -> SynthesisPipelineResult {
         do {
             let samples = try engine.synthesize(text: text, voice: voice, speed: speed, language: language)
             return SynthesisPipelineResult(samples: samples, chunkCount: 1)
-        } catch TTSEngineError.tooManyTokens {
+        } catch {
+            guard shouldRefine(after: error) else {
+                throw error
+            }
             let refinedChunks = TextPreprocessor.refine(text)
             guard refinedChunks.count > 1 else {
-                throw TTSEngineError.tooManyTokens
+                throw error
             }
             return try synthesize(
                 chunks: refinedChunks,
@@ -64,6 +73,25 @@ enum SynthesisPipeline {
                 language: language,
                 engine: engine
             )
+        }
+    }
+
+    private static func shouldRefine(after error: Error) -> Bool {
+        guard let typedError = error as? TTSEngineError else {
+            return true
+        }
+
+        switch typedError {
+        case .tooManyTokens:
+            return true
+        case .engineNotInitialized,
+             .missingRequiredFile,
+             .noVoicesFound,
+             .unknownVoice,
+             .emptyText,
+             .invalidSpeed,
+             .alreadyInitialized:
+            return false
         }
     }
 }

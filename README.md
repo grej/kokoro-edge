@@ -36,7 +36,7 @@ The installer:
 
 ### Build From Source
 
-Source builds require `Xcode 16.3+` and `Swift 6.2+`.
+Source builds require `Xcode 16.4+` and `Swift 6.1+`.
 
 ```bash
 git clone https://github.com/<org>/kokoro-edge.git
