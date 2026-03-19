@@ -10,7 +10,7 @@ package:
 
 source:
   url: https://github.com/grej/kokoro-edge/releases/download/v${{ version }}/kokoro-edge-${{ version }}-macos-arm64.tar.gz
-  sha256: ddb2ea99806de30da98b7adb28b90d75a1678869c99d4aedc2aa700d7ae3219f
+  sha256: 1e986835327c461d5ec4c399252e8adb695e99a6fc5322ee1edf4b25d789e579
 
 build:
   number: 0
@@ -22,6 +22,9 @@ build:
     - cp bin/kokoro-edge "$PREFIX/bin/"
     - cp -R bin/*.bundle "$PREFIX/bin/"
     - cp -R lib/*.framework "$PREFIX/lib/"
+    - xattr -cr "$PREFIX/bin/kokoro-edge" 2>/dev/null || true
+    - xattr -cr "$PREFIX/bin/"*.bundle 2>/dev/null || true
+    - xattr -cr "$PREFIX/lib/"*.framework 2>/dev/null || true
 
 tests:
   - script:

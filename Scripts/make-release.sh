@@ -13,6 +13,8 @@ mkdir -p "$DIST_DIR"
 
 "$ROOT/Scripts/build-source.sh"
 
+codesign --sign - --force "$ROOT/.build-xcode/stage/bin/kokoro-edge"
+
 rm -f "$ARCHIVE_PATH" "$CHECKSUM_PATH"
 tar -C "$ROOT/.build-xcode/stage" -czf "$ARCHIVE_PATH" bin lib
 shasum -a 256 "$ARCHIVE_PATH" > "$CHECKSUM_PATH"
