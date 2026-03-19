@@ -4,3 +4,4 @@ channels = ["conda-forge"]
 platforms = ["osx-arm64"]
 
 [dependencies]
+coreutils = "*"

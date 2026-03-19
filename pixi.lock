@@ -1,0 +1,18 @@
+version: 6
+environments:
+  default:
+    channels:
+    - url: https://conda.anaconda.org/conda-forge/
+    options:
+      pypi-prerelease-mode: if-necessary-or-explicit
+    packages:
+      osx-arm64:
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/coreutils-9.5-h93a5062_0.conda
+packages:
+- conda: https://conda.anaconda.org/conda-forge/osx-arm64/coreutils-9.5-h93a5062_0.conda
+  sha256: 70e50f2f1458e7c172c9b1c149a4289e8eecc9b53e06ab9de0b3572cdbd30a61
+  md5: 75840e25e62a109b1d25043c63a4f36c
+  license: GPL-3.0-or-later
+  license_family: GPL
+  size: 1478098
+  timestamp: 1711655465375
