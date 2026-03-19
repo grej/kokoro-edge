@@ -8,6 +8,5 @@ dist/
 *.mp3
 *.profraw
 default.profraw
-pixi.toml
 pixi.lock
 .pixi/

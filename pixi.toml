@@ -1,0 +1,6 @@
+[workspace]
+name = "kokoro-edge"
+channels = ["conda-forge"]
+platforms = ["osx-arm64"]
+
+[dependencies]

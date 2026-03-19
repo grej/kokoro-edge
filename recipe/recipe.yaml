@@ -1,0 +1,41 @@
+schema_version: 1
+
+context:
+  name: kokoro-edge
+  version: ${{ env.get("PKG_VERSION") }}
+
+package:
+  name: ${{ name }}
+  version: ${{ version }}
+
+source:
+  url: https://github.com/grej/kokoro-edge/releases/download/v${{ version }}/kokoro-edge-${{ version }}-macos-arm64.tar.gz
+  sha256: ddb2ea99806de30da98b7adb28b90d75a1678869c99d4aedc2aa700d7ae3219f
+
+build:
+  number: 0
+  skip:
+    - not osx
+    - not arm64
+  script:
+    - mkdir -p "$PREFIX/bin" "$PREFIX/lib"
+    - cp bin/kokoro-edge "$PREFIX/bin/"
+    - cp -R bin/*.bundle "$PREFIX/bin/"
+    - cp -R lib/*.framework "$PREFIX/lib/"
+
+tests:
+  - script:
+      - kokoro-edge --help
+
+about:
+  homepage: https://github.com/grej/kokoro-edge
+  repository: https://github.com/grej/kokoro-edge
+  license: MIT
+  summary: Local voice engine daemon for Apple Silicon
+  description: |
+    kokoro-edge is a native Swift daemon that wraps the Kokoro-82M TTS model
+    via MLX on Apple Silicon. It provides an OpenAI-compatible HTTP API for
+    local text-to-speech synthesis. Models download automatically on first use.
+
+    Install with pixi (recommended):
+      pixi global install kokoro-edge -c https://conda.anaconda.org/gjennings -c conda-forge
