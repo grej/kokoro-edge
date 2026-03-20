@@ -6,18 +6,34 @@ Running local TTS on Apple Silicon today usually means fighting Python dependenc
 
 ## Demo
 
-Target install-to-first-audio flow (Homebrew is planned post-v0.1):
+Install-to-first-audio:
 
 ```bash
-brew tap <org>/kokoro-edge && brew install kokoro-edge
+pixi global install kokoro-edge -c https://conda.anaconda.org/gjennings -c conda-forge
 kokoro-edge serve
 curl -X POST localhost:7777/v1/audio/speech -H "Content-Type: application/json" \
   -d '{"input":"Hello world"}' -o hello.wav && afplay hello.wav
 ```
 
-Current v0.1 install paths are the curl installer and building from source, both documented below.
+Current install paths are pixi/conda, the curl installer, and building from source, all documented below.
 
 ## Install
+
+### pixi (recommended)
+
+The simplest way to get the binary. No Xcode required:
+
+```bash
+pixi global install kokoro-edge -c https://conda.anaconda.org/gjennings -c conda-forge
+```
+
+This installs the pre-built `kokoro-edge` binary and its frameworks into an isolated pixi environment and puts it on your PATH. Upgrade with:
+
+```bash
+pixi global upgrade kokoro-edge
+```
+
+> **Note:** If you install [readcast](https://github.com/grej/readcast), `kokoro-edge` is included as a dependency — no separate install needed.
 
 ### Curl Installer
 
