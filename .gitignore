@@ -9,3 +9,4 @@ dist/
 *.profraw
 default.profraw
 .pixi/
+internal_implementation_notes.md
